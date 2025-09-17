@@ -1,0 +1,140 @@
+@import "./variables.scss";
+
+// Global Reset and Base Styles
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+body {
+  font-family: $font-family-base;
+  color: $text-primary;
+  background: $background-gradient;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// App Container
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 2rem;
+
+  @media (max-width: $breakpoint-md) {
+    padding-top: 1rem;
+    align-items: stretch;
+  }
+}
+
+.info-section {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #ececf1;
+  font-size: 1rem;
+  padding: 0 1rem;
+}
+
+@media (max-width: 600px) {
+  .info-section {
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+    padding: 0 0.5rem;
+  }
+}
+
+// Utility Classes
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+
+.fw-normal { font-weight: $font-weight-normal; }
+.fw-medium { font-weight: $font-weight-medium; }
+.fw-semibold { font-weight: $font-weight-semibold; }
+.fw-bold { font-weight: $font-weight-bold; }
+
+.d-flex { display: flex; }
+.d-block { display: block; }
+.d-inline-block { display: inline-block; }
+.d-none { display: none; }
+
+.justify-content-center { justify-content: center; }
+.justify-content-between { justify-content: space-between; }
+.align-items-center { align-items: center; }
+
+.mb-0 { margin-bottom: 0; }
+.mb-1 { margin-bottom: $spacing-xs; }
+.mb-2 { margin-bottom: $spacing-sm; }
+.mb-3 { margin-bottom: $spacing-md; }
+.mb-4 { margin-bottom: $spacing-lg; }
+
+.mt-0 { margin-top: 0; }
+.mt-1 { margin-top: $spacing-xs; }
+.mt-2 { margin-top: $spacing-sm; }
+.mt-3 { margin-top: $spacing-md; }
+.mt-4 { margin-top: $spacing-lg; }
+
+// Button Base Styles
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-sm;
+  padding: $spacing-sm $spacing-md;
+  border: none;
+  border-radius: $radius-md;
+  font-family: inherit;
+  font-weight: $font-weight-medium;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all $transition-base;
+  
+  &:focus {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+  }
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}
+
+// Input Base Styles  
+.form-input {
+  display: block;
+  width: 100%;
+  padding: $spacing-sm $spacing-md;
+  border: 1px solid $border-light;
+  border-radius: $radius-md;
+  font-family: inherit;
+  font-size: $font-size-base;
+  background: $background;
+  transition: all $transition-base;
+  
+  &::placeholder {
+    color: $text-muted;
+  }
+  
+  &:focus {
+    outline: none;
+    border-color: $primary;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+  }
+  
+  &:disabled {
+    background: $background-alt;
+    color: $text-muted;
+    cursor: not-allowed;
+  }
+}
