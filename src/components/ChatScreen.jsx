@@ -12,26 +12,34 @@ function ChatScreen() {
     if (!text.trim()) return;
     setLoading(true);
     setError("");
-    setMessages((prev) => [...prev, { type: "user", text }]);
     try {
       const response = await fetch("https://news-rag-chatbot-server.onrender.com/api/ask", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query: text })
+        body: JSON.stringify({ query: text }),
+        credentials: "include"
       });
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      const data = await response.json();
-      setMessages((prev) => [
-        ...prev,
-        {
-          type: "bot",
-          text: data.answer || "",
-          answer: data.answer || "",
-          references: data.References || []
+      // After sending, fetch updated history from backend
+      const historyRes = await fetch("https://news-rag-chatbot-server.onrender.com//localhost:3001/api/ask/history", {
+        method: "GET",
+        credentials: "include"
+      });
+      if (historyRes.ok) {
+        const historyData = await historyRes.json();
+        if (Array.isArray(historyData.history)) {
+          setMessages(
+            historyData.history.map((msg) => ({
+              type: msg.type,
+              text: msg.type === "user" ? msg.content : msg.content,
+              answer: msg.type === "bot" ? msg.content : undefined,
+              references: msg.references || []
+            }))
+          );
         }
-      ]);
+      }
     } catch (e) {
       console.error("Chat error:", e);
       setError("Failed to get response. Please try again.");
@@ -40,9 +48,48 @@ function ChatScreen() {
     }
   };
 
-  const handleReset = () => {
-    setMessages([]);
+  // Fetch history on mount (refresh)
+  useEffect(() => {
+    const fetchHistory = async () => {
+      try {
+        const response = await fetch("https://news-rag-chatbot-server.onrender.com/api/ask/history", {
+          method: "GET",
+          credentials: "include"
+        });
+        if (!response.ok) return;
+        const data = await response.json();
+        console.log("/api/ask/history response:", data); // Debug print
+        if (Array.isArray(data.history)) {
+          // Map history to messages format
+          setMessages(
+            data.history.map((msg) => ({
+              type: msg.type,
+              text: msg.type === "user" ? msg.content : msg.content,
+              answer: msg.type === "bot" ? msg.content : undefined,
+              references: msg.references || []
+            }))
+          );
+        }
+      } catch (e) {
+        // Ignore history fetch errors
+      }
+    };
+    fetchHistory();
+  }, []);
+
+  const handleReset = async () => {
+    setLoading(true);
     setError("");
+    try {
+      await fetch("https://news-rag-chatbot-server.onrender.com/api/ask/reset", {
+        method: "POST",
+        credentials: "include"
+      });
+    } catch (e) {
+      // Ignore reset errors
+    }
+    setMessages([]);
+    setLoading(false);
   };
 
   return (
