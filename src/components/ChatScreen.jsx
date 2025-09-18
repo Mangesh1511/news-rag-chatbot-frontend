@@ -23,7 +23,7 @@ function ChatScreen() {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       // After sending, fetch updated history from backend
-      const historyRes = await fetch("https://news-rag-chatbot-server.onrender.com//localhost:3001/api/ask/history", {
+      const historyRes = await fetch("https://news-rag-chatbot-server.onrender.com/api/ask/history", {
         method: "GET",
         credentials: "include"
       });
